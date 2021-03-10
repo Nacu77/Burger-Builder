@@ -1,4 +1,5 @@
 import React, { Component } from "react";
+import { connect } from "react-redux";
 
 import Button from "../../../components/UI/Button/Button";
 import Spinner from "../../../components/UI/Spinner/Spinner";
@@ -99,9 +100,7 @@ class ContactData extends Component {
 
         const formData = {};
         for (let formElementIdentifier in this.state.orderForm) {
-            formData[formElementIdentifier] = this.state.orderForm[
-                formElementIdentifier
-            ].value;
+            formData[formElementIdentifier] = this.state.orderForm[formElementIdentifier].value;
         }
 
         const order = {
@@ -147,17 +146,13 @@ class ContactData extends Component {
             ...updatedOrderForm[inputIdentifier],
         };
         updatedFormElement.value = event.target.value;
-        updatedFormElement.valid = this.checkValidity(
-            updatedFormElement.value,
-            updatedFormElement.validation
-        );
+        updatedFormElement.valid = this.checkValidity(updatedFormElement.value, updatedFormElement.validation);
         updatedFormElement.touched = true;
         updatedOrderForm[inputIdentifier] = updatedFormElement;
 
         let formIsValid = true;
         for (let inputIdentifier in updatedOrderForm) {
-            formIsValid =
-                updatedOrderForm[inputIdentifier].valid && formIsValid;
+            formIsValid = updatedOrderForm[inputIdentifier].valid && formIsValid;
         }
 
         this.setState({
@@ -183,9 +178,7 @@ class ContactData extends Component {
                         elementType={formElement.config.elementType}
                         elementConfig={formElement.config.elementConfig}
                         value={formElement.config.value}
-                        changed={(event) =>
-                            this.inputChangedHandler(event, formElement.id)
-                        }
+                        changed={(event) => this.inputChangedHandler(event, formElement.id)}
                         invalid={!formElement.config.valid}
                         touched={formElement.config.touched}
                     />
@@ -208,4 +201,11 @@ class ContactData extends Component {
     }
 }
 
-export default ContactData;
+const mapStateToProps = (state) => {
+    return {
+        ingredients: state.ingredients,
+        price: state.totalPrice,
+    };
+};
+
+export default connect(mapStateToProps)(ContactData);
